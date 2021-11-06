@@ -9,8 +9,17 @@ import cv2
 import numpy as np
 
 def draw_lines(grid, canvas):
-	for i in range(0, len(grid[0])):
+	# draw horizantal
+	for i in range(len(grid[0])):
 		p = grid[0][i]
+		x1 = int(p[0][0])
+		y1 = int(p[0][1])
+		x2 = int(p[1][0])
+		y2 = int(p[1][1])
+		cv2.line(canvas, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+	for i in range(len(grid[1])):
+		p = grid[1][i]
 		x1 = int(p[0][0])
 		y1 = int(p[0][1])
 		x2 = int(p[1][0])
@@ -23,8 +32,8 @@ def grid_reg(p1, p2, row, col):
 	y_addr = (p2[1]-p1[1])/row
 	x_addr = (p2[0]-p1[0])/col
 	print(y_addr)
-	# horizantal lines
-	for i in range(0, row):
+	# horizontal lines
+	for i in range(row+1):
 		y1 = p1[1]+i*y_addr
 		x1 = p1[0]
 		y2 = p1[1]+i*y_addr
@@ -33,7 +42,7 @@ def grid_reg(p1, p2, row, col):
 		grid[0].append([(x1, y1), (x2, y2)])
 
 	# vertical lines
-	for i in range(0, row):
+	for i in range(col+1):
 		x1 = p1[0]+i*x_addr
 		y1 = p1[1]
 		x2 = p1[0]+i*x_addr
@@ -46,7 +55,7 @@ def grid_reg(p1, p2, row, col):
 # define blank white 640x640 rgb canvas
 canvas = np.ones((640,640,3), np.uint8)*255
 
-grid = grid_reg([0, 0], [100, 100], 10, 10)
+grid = grid_reg([140, 140], [500, 500], 10, 10)
 print(len(grid[0]))
 draw_lines(grid, canvas)
 
