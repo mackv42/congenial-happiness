@@ -51,32 +51,47 @@ def grid_reg(p1, p2, row, col):
 
 	return grid
 
+#
+#	dx = p2[0] - p1[0]
+#	dy = p3[1] - p2[1]
+def grid_rotated(p1, p2, p3, p4, row, col):
+	grid = [[], []]
+	dx = p4[0] - p1[0]
+	dy = p3[1] - p2[1]
+	
+	y_addr = dy/row
+	x_addr = dx/col
 
-# define blank white 640x640 rgb canvas
+	print(x_addr)
+	# horizontal lines
+	for i in range(row+1):
+		y1 = p1[1]+i*y_addr
+		x1 = p1[0]+i*x_addr
+		y2 = p2[1]+i*y_addr
+		x2 = p2[0]+i*x_addr
+		
+		grid[0].append([(x1, y1), (x2, y2)])
+
+	
+	dy = p2[1] - p1[1]
+	x_addr = dy/row
+
+	for i in range(col+1):
+		y1 = p1[1]+i*x_addr
+		y2 = p4[1]+i*x_addr
+		x1 = p1[0]+i*y_addr
+		x2 = p4[0]+i*y_addr
+		
+		grid[1].append([(x1, y1), (x2, y2)])
+	
+	return grid
+
+# make blank white 640x640 rgb canvas
 canvas = np.ones((640,640,3), np.uint8)*255
+grid = grid_rotated([140, 140], [500, 150], [420, 510], [60, 500], 10, 10)
 
-grid = grid_reg([140, 140], [500, 500], 10, 10)
-print(len(grid[0]))
+print(grid[1])
 draw_lines(grid, canvas)
 
 cv2.imshow("hi", canvas)
 cv2.waitKey(0)
-# returns list of lines for flat rotated grid
-'''
-def grid_rotated(p1, p2, row, col):
-	dx = p2[0] - p1[0]
-	dy = p2[1] - p1[1]
-	
-	# numerator and denominator of slope 
-	slope = dx / dy
-
-	#remember y = mx
-	# x = y/m
-
-	# horizantal lines
-	for i in range(0, row):
-		y1 = p1[1]
-		# y = mx+b
-		y2 = slope*p2[0]+p1[1]
-		x1 = i/m + p1[0]
-		'''
