@@ -73,14 +73,16 @@ def grid_rotated(p1, p2, p3, p4, row, col):
 		grid[0].append([(x1, y1), (x2, y2)])
 
 	
+	dx = p3[0] - p4[0]
 	dy = p2[1] - p1[1]
-	x_addr = dy/row
+	y_addr = dy/col
+	x_addr = dx/row
 
 	for i in range(col+1):
-		y1 = p1[1]+i*x_addr
-		y2 = p4[1]+i*x_addr
-		x1 = p1[0]+i*y_addr
-		x2 = p4[0]+i*y_addr
+		y1 = p1[1]+i*y_addr
+		y2 = p4[1]+i*y_addr
+		x1 = p1[0]+i*x_addr
+		x2 = p4[0]+i*x_addr
 		
 		grid[1].append([(x1, y1), (x2, y2)])
 	
