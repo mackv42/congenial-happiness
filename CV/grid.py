@@ -60,7 +60,6 @@ def grid_rotated(p1, p2, p3, p4, row, col):
 	y_addr = dy/row
 	x_addr = dx/col
 
-	print(x_addr)
 	# horizontal lines
 	for i in range(row+1):
 		y1 = p1[1]+i*y_addr
@@ -128,7 +127,6 @@ canvas = np.ones((640,640,3), np.uint8)*255
 grid = grid_rotated([140, 140], [500, 150], [420, 510], [60, 500], 10, 10)
 i_points = grid_intersections(grid)
 
-print(grid[1])
 draw_lines(grid, canvas)
 draw_points(i_points, canvas)
 
