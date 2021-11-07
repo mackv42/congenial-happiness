@@ -51,9 +51,7 @@ def grid_reg(p1, p2, row, col):
 
 	return grid
 
-#
-#	dx = p2[0] - p1[0]
-#	dy = p3[1] - p2[1]
+
 def grid_rotated(p1, p2, p3, p4, row, col):
 	grid = [[], []]
 	dx = p4[0] - p1[0]
@@ -88,12 +86,51 @@ def grid_rotated(p1, p2, p3, p4, row, col):
 	
 	return grid
 
+
+# Copied from S Overflow
+def line_intersection(line1, line2):
+    xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
+    ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
+
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
+
+    div = det(xdiff, ydiff)
+    if div == 0:
+       raise Exception('lines do not intersect')
+
+    d = (det(*line1), det(*line2))
+    x = det(d, xdiff) / div
+    y = det(d, ydiff) / div
+    return x, y
+
+
+# Generic function to detect line intersections in grid
+def grid_intersections(grid):
+	# horizantal lines intersecting
+	#  Vertical
+	points = []
+	for lineh in grid[0]:
+		for linev in grid[1]:
+			point = line_intersection(lineh, linev)
+			points.append(point)
+
+	return points
+
+def draw_points(points, canvas):
+	for point in points:
+		point = (int(point[0]),int(point[1]))
+		# draw 3x3 red rectangle for each point 
+		cv2.rectangle(canvas, (point[0]-1, point[1]-1), (point[0]+1, point[1]+1), (0,0,255), -1)
+
 # make blank white 640x640 rgb canvas
 canvas = np.ones((640,640,3), np.uint8)*255
 grid = grid_rotated([140, 140], [500, 150], [420, 510], [60, 500], 10, 10)
+i_points = grid_intersections(grid)
 
 print(grid[1])
 draw_lines(grid, canvas)
+draw_points(i_points, canvas)
 
 cv2.imshow("hi", canvas)
 cv2.waitKey(0)
