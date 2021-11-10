@@ -225,11 +225,6 @@ def detect_corners_from_contour(canvas, cnt):
     return approx_corners
 
 
-# finds largest quadrilateral 
-##  That matches slope 
-def find_square_points(corners):
-    return
-
 def example_two(image_path):
     """
     Skew correction using homography and corner detection using contour points
@@ -275,4 +270,20 @@ def example_two(image_path):
 
     plt.show()
 
-example_two('2.jpg')
+def corner_detection(image_path):
+    image = cv2.imread(image_path)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    filtered_image = apply_filter(image)
+    ###Experimental###
+    dst = cv2.cornerHarris(filtered_image,2,3,0.04)
+
+#result is dilated for marking the corners, not important
+    dst = cv2.dilate(dst,None)
+
+    # Threshold for an optimal value, it may vary depending on the image.
+    image[dst>0.01*dst.max()]=[0,0,255]
+    cv2.imshow("dst", image)
+
+
+corner_detection('./Images/2021-10-09-134228.jpg')
+cv2.waitKey(0)
