@@ -1,4 +1,5 @@
 import cv2
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -271,9 +272,7 @@ def example_two(image_path):
 
     plt.show()
 
-def corner_detection(image_path):
-    image = cv2.imread(image_path)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+def corner_detection(image):
     filtered_image = apply_filter(image)
     thresh = apply_threshold(filtered_image)
     ###Experimental###
@@ -287,19 +286,51 @@ def corner_detection(image_path):
     cv2.imshow("dst", image)
 
 
-def cd_2(image_path):
-    img = cv2.imread(image_path)
+def cd_2(img, n):
+    #img = cv2.imread(image_path)
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     #gray = np.float32(gray)
     cv2.imshow("gray", gray)
-
-    corners = cv2.goodFeaturesToTrack(gray, 200, 0.01, 20)
+    # input of selecting (img, n best corners, ?, distance )
+    corners = cv2.goodFeaturesToTrack(gray, n, 0.01, 10)
     corners = np.int0(corners)
-    for corner in corners:
+       
+    return corners
+
+def drawCorners(img, corners):
+     for corner in corners:
         x,y = corner.ravel()
         cv2.circle(img,(x,y),3,255,-1)
-    cv2.imshow('Corner', img)
 
+def getMinMax(points):
+    MinX = sys.maxsize
+    MinY = sys.maxsize
+    MaxX = 0
+    MaxY = 0
+    for point in points:
+        x,y = point.ravel()
+        MinX = MinX if MinX < x else x
+        MinY = MinY if MinY < y else y
+        MaxX = MaxX if MaxX > x else x
+        MaxY = MaxY if MaxY > y else y
+
+    return [MinX, MinY, MaxX, MaxY]
+
+
+img = cv2.imread('./Test_Images/Good/3.jpg')
+width = img.shape[1]
+height = img.shape[0]
+
+image = cv2.resize(img, (int(width * .25), int(height*.25)))
+image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 #corner_detection('./Images/2021-10-09-134228.jpg')
-cd_2('./Images/2021-10-09-134228.jpg')
+corners1 = cd_2(image, 10)
+print(corners1)
+_minX, _minY, _maxX, _maxY = getMinMax(corners1)
+print(_minX, _minY, _maxX, _maxY)
+cropped = image[_minY:_maxY, _minX:_maxX]
+#cropped.width = 
+corners2 = cd_2(cropped, 20)
+drawCorners(cropped, corners2)
+cv2.imshow("cropped", cropped)
 cv2.waitKey(0)

@@ -1,0 +1,16 @@
+Plan of attack: 
+	get 10 most relevant corners from shi tomoshi algorithm
+	inside of cropped frame do another shi tomashi with several more:
+			// unsure if I should use min/max x,y values for line or linear regression... we'll see
+		sort points by x value loop(!empty, {get slope of first 2, remove points that are too far from line,
+													 return (popped non-outliers, line)}): 
+		sort points by x value loop(!empty, {get slope of first 2, remove points that are too far from line,
+													 return (popped non-outliers, line)}): 
+
+
+	With above psuedo code we now have a list of horizontal and vertical lines
+
+	## uncertain ##
+	get mean horizontal and vertical_slope from lines
+	get mean distances of lines ( i get it changes if they're not parralell ) but we can use our points
+	
