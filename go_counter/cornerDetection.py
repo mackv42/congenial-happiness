@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
 import cv2
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-
+import sys
+import random
 def shi_tomashi(image):
     """
     Use Shi-Tomashi algorithm to detect corners
@@ -145,7 +147,7 @@ def apply_filter(image):
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     kernel = np.ones((5, 5), np.float32) / 15
     filtered = cv2.filter2D(gray, -1, kernel)
-    plt.imshow(cv2.cvtColor(filtered, cv2.COLOR_BGR2RGB))
+    #plt.imshow(cv2.cvtColor(filtered, cv2.COLOR_BGR2RGB))
     plt.title('Filtered Image')
     plt.show()
     return filtered
@@ -168,7 +170,7 @@ def apply_threshold(filtered):
 
     thresh = cv2.adaptiveThreshold(filtered,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
             cv2.THRESH_BINARY,11,2)
-    plt.imshow(cv2.cvtColor(thresh, cv2.COLOR_BGR2RGB))
+    #plt.imshow(cv2.cvtColor(thresh, cv2.COLOR_BGR2RGB))
     plt.title('After applying OTSU threshold')
     plt.show()
     return thresh
@@ -192,7 +194,7 @@ def detect_contour(img, image_shape):
 
     cv2.drawContours(canvas, cnt, -1, (0, 255, 255), 3)
     plt.title('Largest Contour')
-    plt.imshow(canvas)
+   # plt.imshow(canvas)
     plt.show()
 
     return canvas, cnt
@@ -221,7 +223,7 @@ def detect_corners_from_contour(canvas, cnt):
     # Rearranging the order of the corner points
     approx_corners = [approx_corners[i] for i in [0, 2, 1, 3]]
 
-    plt.imshow(canvas)
+   # plt.imshow(canvas)
     plt.title('Corner Points: Douglas-Peucker')
     plt.show()
     return approx_corners
@@ -235,7 +237,7 @@ def example_two(image_path):
     """
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    plt.imshow(image)
+   # plt.imshow(image)
     plt.title('Original Image')
     plt.show()
 
@@ -250,7 +252,7 @@ def example_two(image_path):
     # Threshold for an optimal value, it may vary depending on the image.
     image[dst>0.01*dst.max()]=[0,0,255]
 
-    cv2.imshow('dst', image)
+   # cv2.imshow('dst', image)
 
     thresh = cv2.adaptiveThreshold(filtered_image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 21, 10)
     cv2.imshow("Mean Adaptive Thresholding", thresh)
@@ -283,14 +285,14 @@ def corner_detection(image):
 
     # Threshold for an optimal value, it may vary depending on the image.
     image[dst>0.3*dst.max()]=[0,0,255]
-    cv2.imshow("dst", image)
+    #cv2.imshow("dst", image)
 
 
 def cd_2(img, n):
     #img = cv2.imread(image_path)
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     #gray = np.float32(gray)
-    cv2.imshow("gray", gray)
+    #cv2.imshow("gray", gray)
     # input of selecting (img, n best corners, ?, distance )
     corners = cv2.goodFeaturesToTrack(gray, n, 0.01, 10)
     corners = np.int0(corners)
@@ -316,21 +318,35 @@ def getMinMax(points):
 
     return [MinX, MinY, MaxX, MaxY]
 
+def sortX(points):
+    s = np.sort(points, key= lambda x: x[0])
+    return s
 
-img = cv2.imread('./Test_Images/Good/3.jpg')
-width = img.shape[1]
-height = img.shape[0]
+def sortY(points):
+    s = np.sort(points, key = lambda y: y[1])
+    return s
 
-image = cv2.resize(img, (int(width * .25), int(height*.25)))
-image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-#corner_detection('./Images/2021-10-09-134228.jpg')
-corners1 = cd_2(image, 10)
-print(corners1)
-_minX, _minY, _maxX, _maxY = getMinMax(corners1)
-print(_minX, _minY, _maxX, _maxY)
-cropped = image[_minY:_maxY, _minX:_maxX]
-#cropped.width = 
-corners2 = cd_2(cropped, 20)
-drawCorners(cropped, corners2)
-cv2.imshow("cropped", cropped)
-cv2.waitKey(0)
+def slope(p1, p2):
+    return p2[0]-p1[0]/p2[1]-p1[0]
+
+img = cv2.imread(sys.argv[1])
+
+print(sys.argv[1])
+if img is not None:
+    width = img.shape[1]
+    height = img.shape[0]
+
+    image = cv2.resize(img, (int(width * .25), int(height*.25)))
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    #corner_detection('./Images/2021-10-09-134228.jpg')
+    corners1 = cd_2(image, 10)
+    print(corners1)
+    drawCorners(image, corners1)
+    cv2.imwrite("./results/points/"+str(random.randrange(2000))+".jpg", image)
+    _minX, _minY, _maxX, _maxY = getMinMax(corners1)
+    print(_minX, _minY, _maxX, _maxY)
+    cropped = image[_minY:_maxY, _minX:_maxX]
+    #cropped.width = 
+    corners2 = cd_2(cropped, 20)
+    drawCorners(cropped, corners2)
+    cv2.imwrite("./results/crop_points/"+str(random.randrange(2000))+".jpg", cropped)
