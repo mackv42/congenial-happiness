@@ -85,6 +85,13 @@ def grid_rotated(p1, p2, p3, p4, row, col):
 	
 	return grid
 
+## TODO ##
+"""
+def grid_skewed(p1, p2, p3, p4, row, col):
+	# Thinking to create a regular grid from max vals then multiply by a homography matrix
+	grid = grid_reg( max(x=> p1, p2, p3, p4), max(y => p1, p2, p3, p4), row, col)
+	
+"""
 
 # Copied from S Overflow
 def line_intersection(line1, line2):
